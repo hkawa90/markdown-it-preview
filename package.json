@@ -1,0 +1,21 @@
+{
+  "name": "markdown-it-preview",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["markdown", "markdown-it", "puppeteer"],
+  "author": "Hideo Kawamura",
+  "license": "MIT",
+  "bin": {
+    "markdown-preview" : "index.js"
+  },
+  "dependencies": {
+    "command-line-args": "^5.0.2",
+    "command-line-usage": "^5.0.5",
+    "markdown-it-custom-html-comment": "git+https://github.com/hkawa90/markdown-it-custom-html-comment.git",
+    "puppeteer": "^1.8.0"
+  }
+}
