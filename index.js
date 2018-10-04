@@ -13,7 +13,7 @@ var options;
 try {
     options = commandLineArgs(optionDefinitions)
 } catch(e) {
-    process.stdout.write(e)
+    process.stdout.write(e.toString() + '\n')
     process.exit(1)
 }
 if (options.help) {
@@ -38,12 +38,12 @@ if (options.help) {
                 {
                     name: 'file',
                     typeLabel: '{underline Markdown_file}',
-                    description: 'preview mode with browser.'
+                    description: 'markdown file(input).'
                 },
                 {
                     name: 'output',
                     typeLabel: '{underline pdf_file}',
-                    description: 'PDF output path.'
+                    description: 'PDF output path(output).'
                 },
                 {
                     name: 'help',
@@ -63,10 +63,14 @@ if (options.file === undefined) {
 }
 
 (async (options) => {
-    const browser = await puppeteer.launch({
+    const lauchOpt = {
         headless: !options.view,
         args: ['--no-sandbox']
-    });
+    }
+    if (options.view) {
+        lauchOpt.defaultViewport = null
+    }
+    const browser = await puppeteer.launch(lauchOpt)
     const page = await browser.newPage();
     function check(filePath) {
         var isExist = false;
@@ -79,7 +83,7 @@ if (options.file === undefined) {
         return isExist;
     }
 
-    function readMarkdownFile(filePath) {
+    function readFile(filePath) {
         var content = new String();
         if (check(filePath)) {
             content = fs.readFileSync(filePath, 'utf8');
@@ -99,7 +103,10 @@ if (options.file === undefined) {
             return '';
         }
     });
-    let html = md.render(readMarkdownFile(options.file))
+    let html = md.render(readFile(options.file))
+    let css = Buffer.from(readFile(options.css), 'utf8').toString('base64')
+    let meta = `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
+    html = meta + html;
     await page.goto(`data:text/html,${html}`, { waitUntil: 'networkidle0' });
     // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
     if (!options.view) {
