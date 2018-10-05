@@ -1,18 +1,20 @@
 
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+var hljs = require('highlight.js');
 const optionDefinitions = [
     { name: 'css', alias: 'c', type: String },
+    { name: 'html', type: String },
     { name: 'view', type: Boolean, defaultValue: false },
     { name: 'file', type: String },
-    { name: 'output', type: String, defaultValue: 'output.pdf'}, 
+    { name: 'output', type: String, defaultValue: 'output.pdf' },
     { name: 'help', alias: 'h', type: Boolean }
 ];
 const commandLineArgs = require('command-line-args');
 var options;
 try {
     options = commandLineArgs(optionDefinitions)
-} catch(e) {
+} catch (e) {
     process.stdout.write(e.toString() + '\n')
     process.exit(1)
 }
@@ -30,6 +32,11 @@ if (options.help) {
                     name: 'css',
                     typeLabel: '{underline css_file}',
                     description: 'css file.'
+                },
+                {
+                    name: 'html',
+                    typeLabel: '{underline html_file}',
+                    description: 'output html file.'
                 },
                 {
                     name: 'view',
@@ -92,21 +99,30 @@ if (options.file === undefined) {
     }
 
     var md = require('markdown-it')({
-        html: false
-    });
-    md.use(require('markdown-it-custom-html-comment'), 'pagebreak', {
-        render: function (tokens, idx) {
-            var m = tokens[idx].info.trim().match(/pagebreak/);
-            if (m) {
-                return '<div style="page-break-before:always"></div>'
+        html: false,
+        highlight: function (str, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                try {
+                    return hljs.highlight(lang, str).value;
+                } catch (__) { }
             }
-            return '';
+            return ''; // use external default escaping
         }
     });
+
     let html = md.render(readFile(options.file))
     let css = Buffer.from(readFile(options.css), 'utf8').toString('base64')
     let meta = `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
+    css = Buffer.from(readFile('node_modules/highlight.js/styles/tomorrow.css'), 'utf8').toString('base64')
+    meta += `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
     html = meta + html;
+    if (options.html) {
+        if (options.html === '-') {
+            process.stdout.write(html)
+        } else {
+            fs.writeFileSync(options.html,html);
+        }
+    }
     await page.goto(`data:text/html,${html}`, { waitUntil: 'networkidle0' });
     // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
     if (!options.view) {
