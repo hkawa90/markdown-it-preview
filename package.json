@@ -6,16 +6,25 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["markdown", "markdown-it", "puppeteer"],
+  "keywords": [
+    "markdown",
+    "markdown-it",
+    "puppeteer"
+  ],
   "author": "Hideo Kawamura",
   "license": "MIT",
   "bin": {
-    "markdown-preview" : "index.js"
+    "markdown-preview": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hkawa90/markdown-it-preview.git"
   },
   "dependencies": {
     "command-line-args": "^5.0.2",
     "command-line-usage": "^5.0.5",
-    "markdown-it-custom-html-comment": "git+https://github.com/hkawa90/markdown-it-custom-html-comment.git",
+    "highlight.js": "^9.12.0",
+    "markdown-it": "^8.4.2",
     "puppeteer": "^1.8.0"
   }
 }
