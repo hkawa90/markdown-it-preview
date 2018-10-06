@@ -1,7 +1,10 @@
 
+'use strict';
+
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 var hljs = require('highlight.js');
+var fencedCodeBlockExt = null;
 const optionDefinitions = [
     { name: 'css', alias: 'c', type: String },
     { name: 'html', type: String },
@@ -98,6 +101,15 @@ if (options.file === undefined) {
         return content;
     }
 
+    function postProcess(plugins) {
+        let postdoc = ''
+        for (let plugin of plugins) {
+            if ((plugin.postProcess !== null) && plugin.enable) {
+                postdoc += plugin.postProcess()
+            }
+        }
+        return postdoc
+    }
     var md = require('markdown-it')({
         html: false,
         highlight: function (str, lang) {
@@ -105,28 +117,47 @@ if (options.file === undefined) {
                 try {
                     return hljs.highlight(lang, str).value;
                 } catch (__) { }
+            } else if (fencedCodeBlockExt !== null) {
+                for (let ext of fencedCodeBlockExt) {
+                    if (ext.name === lang) {
+                        return ext.proc(str)
+                    }
+                }
             }
             return ''; // use external default escaping
         }
     });
 
+    // load config
+    const config = require('./markdown-preview.conf')
+    // load plugin
+    const setup_plugin = require('./plugin')
+    setup_plugin(md, config.plugins)
+    // fenced Code Block Extensions
+    fencedCodeBlockExt = config.fenced_code_blocks_extensions
+
     let html = md.render(readFile(options.file))
     let css = Buffer.from(readFile(options.css), 'utf8').toString('base64')
-    let meta = `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
-    css = Buffer.from(readFile('node_modules/highlight.js/styles/tomorrow.css'), 'utf8').toString('base64')
+    let meta = '<meta charset="utf-8">'
+    meta = meta + `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
+    css = Buffer.from(readFile(`node_modules/highlight.js/styles/${config.highlight.theme}.css`), 'utf8').toString('base64')
     meta += `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
-    html = meta + html;
+    html = meta + '\n' + html;
+    html += postProcess(config.plugins)
+    html += postProcess(config.fenced_code_blocks_extensions)
     if (options.html) {
         if (options.html === '-') {
             process.stdout.write(html)
         } else {
-            fs.writeFileSync(options.html,html);
+            fs.writeFileSync(options.html, html);
         }
     }
+    
     await page.goto(`data:text/html,${html}`, { waitUntil: 'networkidle0' });
     // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
     if (!options.view) {
-        await page.pdf({ path: options.output, format: 'A4' });
+        let opt = Object.assign({ path: options.output, format: 'A4' }, config.pdf_options)
+        await page.pdf(opt);
     }
     if (!options.view) {
         await browser.close();

@@ -1,5 +1,5 @@
 # markdown-it preview
-Markdown をPDF出力したり、ブラウザで閲覧します。
+Convert markdown to PDF/HTML, Preview with internal browser(puppeteer)
 ## Requirement
 See package.json.
 ## Synopsis
@@ -30,6 +30,74 @@ Otherwise arguments:
 - Convert Markdown to HTML with [markdown-it](https://github.com/markdown-it/markdown-it)
 - Supported code highlighting with [highlight.js](https://highlightjs.org/)
 - Markdown preview with builtin-Chrome
+- Markdown-it plugin(See plugins directory)
+    - [markdown-it-abbr](https://github.com/markdown-it/markdown-it-abbr)
+    - [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote)
+    - [markdown-it-checkbox](https://github.com/mcecot/markdown-it-checkbox)
+    - [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins)
+    - [markdown-it-mark](https://github.com/markdown-it/markdown-it-mark)
+    - [markdown-it-container](https://github.com/markdown-it/markdown-it-container)
+    - [markdown-it-mathjax](https://github.com/classeur/markdown-it-mathjax)
+    - [markdown-it-deflist](https://github.com/markdown-it/markdown-it-deflist)
+    - [markdown-it-sub](https://github.com/markdown-it/markdown-it-sub)
+    - [markdown-it-sup](https://github.com/markdown-it/markdown-it-sup)
+    - [markdown-it-emoji](https://github.com/markdown-it/markdown-it-emoji)
+- Markdown fenced code block extension
+    - [mermaid](https://mermaidjs.github.io/)
+## Example
+- PDF output only
+```
+node index.js --file test/markdown-example.md --css css/markdown.md
+```
+- Preview
+```
+node index.js --file test/markdown-example.md --css css/markdown.md --view
+```
+- HTML output only
+```
+node index.js --file test/markdown-example.md --css css/markdown.md --html output.html
+```
+- HTML output to stdout only
+```
+node index.js --file test/markdown-example.md --css css/markdown.md --html -
+```
+## Configuration
+### PDF output options
+See [puppeteer](https://github.com/GoogleChrome/puppeteer/blob/v1.9.0/docs/api.md#pagepdfoptions).
+The options defined `pdf_options` in `markdown-preview.conf.js`.
+``` js
+    pdf_options: {
+        scale: 1,
+        displayHeaderFooter: false,
+        headerTemplate: '',
+        footerTemplate: '',
+        landscape: false,
+        pageRanges: '',
+        format: 'A4',
+        width: '',
+        height: '',
+        margin: {
+            top: '',
+            right: '',
+            bottom: '',
+            left: ''
+        },
+        preferCSSPageSize: false
+    }
+```
+### Highlighting('highlight.js') theme
+Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The default value is 'tomorrow'.Now the style options is ignored.
+``` js
+    highlight: {
+        theme: 'tomorrow',
+        style: {
+            font: {
+                size: null,
+                family: null
+            }
+        }
+    },
+```
 ## Limitations
 - Markdown file size is up to about 2MB.
 - ~~In Browser preview mode, view port size is small to window size.~~  
@@ -37,13 +105,17 @@ Otherwise arguments:
 ## TODO
 - [x] CSS
 - [x] output html
-- [ ] configure pdf output options(See [`puppeteer.pdf` option](https://github.com/GoogleChrome/puppeteer/blob/v1.9.0/docs/api.md#pagepdfoptions))
-- [ ] configure highlight.js theme
+- [x] configure pdf output options(See [`puppeteer.pdf` option](https://github.com/GoogleChrome/puppeteer/blob/v1.9.0/docs/api.md#pagepdfoptions))
+- [x] configure highlight.js theme
 - [ ] input markdown file from stdin
 - [ ] Document
-- [ ] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
+- [x] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
 - [ ] Test code
+## Issues
+- [ ] conflict between markdown css and MathJax style.
+- [ ] take big margin around mermaid diagram.
 ## Miscellaneous
 - test/markdown-example.md : from [markdown-it demo](https://markdown-it.github.io/)
-- test/markdown.css: from [markdown-css-themes](https://github.com/jasonm23/markdown-css-themes)
-- test/Vostok.css : from [markown-utilities](https://github.com/nWODT-Cobalt/markown-utilities)
+- css/markdown.css: from [markdown-css-themes](https://github.com/jasonm23/markdown-css-themes)
+- css/markdown1.css: from [markdown-css-themes](https://github.com/jasonm23/markdown-css-themes)
+- css/Vostok.css : from [markown-utilities](https://github.com/nWODT-Cobalt/markown-utilities)
