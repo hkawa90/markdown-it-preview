@@ -1,5 +1,6 @@
 
 'use strict';
+
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 var hljs = require('highlight.js');
@@ -9,15 +10,28 @@ const optionDefinitions = [
     { name: 'html', type: String },
     { name: 'view', type: Boolean, defaultValue: false },
     { name: 'file', type: String },
+    { name: 'url', type: String },
     { name: 'output', type: String, defaultValue: 'output.pdf' },
-    { name: 'screenshot', type: String},
+    { name: 'screenshot', type: String },
     { name: 'inputFileType', type: String, defaultValue: 'markdown' },
+    { name: 'pdf', type: Boolean, defaultValue: false },
     { name: 'help', alias: 'h', type: Boolean }
 ];
 const commandLineArgs = require('command-line-args');
 var options;
 try {
     options = commandLineArgs(optionDefinitions)
+    if (((options.file === undefined) && (options.url === undefined)) ||
+        (options.file !== undefined) && (options.url !== undefined)) {
+        process.stdout.write('You must specify either --file or --url\n')
+        process.exit(1)
+    }
+    if (!options.pdf && options.screenshot === undefined && !options.view) {
+        options.pdf = true
+    }
+    if (options.url !== undefine) {
+        options.inputFileType = null
+    }
 } catch (e) {
     process.stdout.write(e.toString() + '\n')
     process.exit(1)
@@ -62,6 +76,15 @@ if (options.help) {
                     description: 'PDF output path(output).'
                 },
                 {
+                    name: 'url',
+                    typeLabel: '{underline url}',
+                    description: 'input web page url.'
+                },
+                {
+                    name: 'pdf',
+                    description: 'output PDF file.'
+                },
+                {
                     name: 'screenshot',
                     typeLabel: '{underline png_file}',
                     description: 'obtain screenshot as PNG file..'
@@ -77,11 +100,7 @@ if (options.help) {
     process.stdout.write(usage + '\n')
     process.stdout.write(JSON.stringify(options) + '\n')
     process.exit(0)
-}
-if (options.file === undefined) {
-    process.stdout.write('You must specify markdown file.\n')
-    process.exit(1)
-}
+};
 
 (async (options) => {
     const lauchOpt = {
@@ -197,14 +216,14 @@ if (options.file === undefined) {
         }
     }
 
-    await page.goto(`data:text/html,${htmldoc}`, { waitUntil: 'networkidle0' });
+    await page.goto((options.url !== undefined) ? options.url : `data:text/html,${htmldoc}`, { waitUntil: 'networkidle0' });
     // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
-    if (!options.view) {
-        let opt = Object.assign({ path: options.output, format: 'A4' }, config.pdf_options)
+    if (!options.view && options.pdf) {
+        let opt = Object.assign({ path: options.output }, config.pdf_options)
         await page.pdf(opt);
     }
     if (options.screenshot) {
-        await page.screenshot({path: options.screenshot, fullPage:true})
+        await page.screenshot({ path: options.screenshot, fullPage: true })
     }
     if (!options.view) {
         await browser.close();
