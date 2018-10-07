@@ -33,7 +33,7 @@ module.exports = {
             name: 'mermaid',
             description: 'Generation of diagrams and flowcharts from text in a similar manner as markdown.',
             proc: function (contents) { return `<div class="mermaid">${contents}</div>` },
-            postProcess: function () {return '<script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script><script>window.addEventListener("load",function(){mermaid.initialize({startOnLoad:true});});</script>' },
+            postProcess: function () { return '<script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script><script>window.addEventListener("load",function(){mermaid.initialize({startOnLoad:true});});</script>' },
             enable: true
         }
     ],
