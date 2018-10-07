@@ -39,10 +39,6 @@ module.exports = {
     ],
     plugins: [
         {
-            name: '',
-            postProcess: function () { return '' }
-        },
-        {
             name: 'markdown-it-abbr',
             description: 'Abbreviation (<abbr>) tag plugin for markdown-it markdown parser',
             postProcess: null,
