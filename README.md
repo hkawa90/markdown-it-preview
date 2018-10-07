@@ -24,6 +24,10 @@ Otherwise arguments:
     apply css file.
 --html=HTML_FILE_PATH
     output html file.
+--inputFileType=html
+    treat input file type as html. (not yet supported)
+--screenshot=PNG_FILE_PATH
+    obtain screenshot as PNG image.(not yet supported)
 ```
 ## Features
 - Convert Markdown to PDF with [puppeteer](https://github.com/GoogleChrome/puppeteer).
@@ -107,7 +111,9 @@ Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The defaul
 - [x] output html
 - [x] configure pdf output options(See [`puppeteer.pdf` option](https://github.com/GoogleChrome/puppeteer/blob/v1.9.0/docs/api.md#pagepdfoptions))
 - [x] configure highlight.js theme
-- [ ] input markdown file from stdin
+- [x] input markdown file from stdin
+- [ ] highlight style setting
+- [ ] screenshot
 - [ ] Document
 - [x] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
 - [ ] Test code
