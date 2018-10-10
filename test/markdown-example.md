@@ -305,3 +305,11 @@ digraph G {
     end [shape=Msquare];
 }
 ```
+### [Wavedrom](https://github.com/drom/wavedrom)
+``` wavedrom
+{ signal : [
+  { name: "clk",  wave: "p......" },
+  { name: "bus",  wave: "x.34.5x",   data: "head body tail" },
+  { name: "wire", wave: "0.1..0." },
+]}
+```

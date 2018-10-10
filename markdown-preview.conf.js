@@ -30,6 +30,17 @@ module.exports = {
     emulate_screen_device: null,
     fenced_code_blocks_extensions: [
         {
+            name: 'wavedrom',
+            description: 'digital timing diagram (waveform) rendering engine',
+            proc: function (contents) { return `<script type="WaveDrom">${contents}</script>` },
+            postProcess: function () { return `
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/1.6.2/skins/default.js" type="text/javascript"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/1.6.2/wavedrom.min.js" type="text/javascript"></script>
+            <script>window.addEventListener("load",function(){WaveDrom.ProcessAll()});</script>
+            ` },
+            enable: true
+        },
+        {
             name: 'mermaid',
             description: 'Generation of diagrams and flowcharts from text in a similar manner as markdown.',
             proc: function (contents) { return `<div class="mermaid">${contents}</div>` },

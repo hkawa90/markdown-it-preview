@@ -53,6 +53,7 @@ Otherwise arguments:
 - Markdown fenced code block extension
     - [mermaid](https://mermaidjs.github.io/)
     - [viz](https://github.com/mdaines/viz.js)
+    - [Wavedrom](https://github.com/drom/wavedrom)
 ## Example
 - PDF output only
 ```
