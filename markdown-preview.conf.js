@@ -35,6 +35,38 @@ module.exports = {
             proc: function (contents) { return `<div class="mermaid">${contents}</div>` },
             postProcess: function () { return '<script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script><script>window.addEventListener("load",function(){mermaid.initialize({startOnLoad:true});});</script>' },
             enable: true
+        },
+        {
+            name: 'viz',
+            description: 'Graphviz Features',
+            proc: function (contents) { return `<div class="viz">${contents}</div>` },
+            postProcess: function () {
+                return `
+            <script src="./node_modules/viz.js/viz.js"></script>
+            <script src="./node_modules/viz.js/full.render.js"></script>
+            <script>window.addEventListener("load", function () { startViz(); });</script>
+    <script>
+        function startViz() {
+            var viz = new Viz();
+            var promiseSlot = []
+            var elementList = document.querySelectorAll('.viz')
+            for (var idx = 0; idx < elementList.length; idx++) {
+                promiseSlot.push(viz.renderSVGElement(elementList[idx].textContent)
+                    .then(function (element) {
+                        return element
+                    })
+                )
+            }
+            Promise.all(promiseSlot).then((values) => {
+                for (var idx = 0; idx < elementList.length; idx++) {
+                    elementList[idx].textContent = ''
+                    elementList[idx].appendChild(values[idx])
+                    elementList[idx].setAttribute('data-processed', 'true')
+                }
+            })
+        }
+    </script>` },
+            enable: true
         }
     ],
     plugins: [
