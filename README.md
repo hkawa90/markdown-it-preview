@@ -121,12 +121,13 @@ Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The defaul
 - [ ] configuration file
 - [x] screenshot
 - [x] url option
+- [ ] Do pdf output/screenshot, when completed with rendering mermaid and viz.
 - [ ] Document
 - [x] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
 - [ ] Test code
 ## Issues
-- [ ] conflict between markdown css and MathJax style.
-- [ ] take big margin around mermaid diagram.
+- [x] conflict between markdown css and MathJax style.
+- [x] take big margin around mermaid diagram.
 ## Miscellaneous
 - test/markdown-example.md : from [markdown-it demo](https://markdown-it.github.io/)
 - css/markdown.css: from [markdown-css-themes](https://github.com/jasonm23/markdown-css-themes)
