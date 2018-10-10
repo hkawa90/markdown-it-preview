@@ -1,5 +1,5 @@
 # markdown-it preview
-Convert markdown to PDF/HTML, Preview with internal browser(puppeteer)
+Convert markdown/HTML to PDF/HTML, Preview with internal browser(puppeteer)
 ## Requirement
 See package.json.
 ## Synopsis
@@ -25,9 +25,13 @@ Otherwise arguments:
 --html=HTML_FILE_PATH
     output html file.
 --inputFileType=html
-    treat input file type as html. (not yet supported)
+    treat input file type as html. 
 --screenshot=PNG_FILE_PATH
-    obtain screenshot as PNG image.(not yet supported)
+    obtain screenshot as PNG image.
+--pdf
+    output PDF file.
+--url=url string
+    input web page url.
 ```
 ## Features
 - Convert Markdown to PDF with [puppeteer](https://github.com/GoogleChrome/puppeteer).
@@ -48,6 +52,7 @@ Otherwise arguments:
     - [markdown-it-emoji](https://github.com/markdown-it/markdown-it-emoji)
 - Markdown fenced code block extension
     - [mermaid](https://mermaidjs.github.io/)
+    - [viz](https://github.com/mdaines/viz.js)
 ## Example
 - PDF output only
 ```
@@ -114,6 +119,7 @@ Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The defaul
 - [x] input markdown file from stdin
 - [ ] highlight style setting
 - [ ] screenshot
+- [ ] url option
 - [ ] Document
 - [x] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
 - [ ] Test code

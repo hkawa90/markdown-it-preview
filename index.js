@@ -2,8 +2,11 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path')
 const puppeteer = require('puppeteer');
 var hljs = require('highlight.js');
+
+const TMP_HTML_FILE = '_temp.html'
 var fencedCodeBlockExt = null;
 const optionDefinitions = [
     { name: 'css', alias: 'c', type: String },
@@ -29,7 +32,7 @@ try {
     if (!options.pdf && options.screenshot === undefined && !options.view) {
         options.pdf = true
     }
-    if (options.url !== undefine) {
+    if (options.url !== undefined) {
         options.inputFileType = null
     }
 } catch (e) {
@@ -111,6 +114,11 @@ if (options.help) {
         lauchOpt.defaultViewport = null
     }
     const browser = await puppeteer.launch(lauchOpt)
+    browser.on('disconnected', () => {
+        if (check(TMP_HTML_FILE)) {
+            fs.unlink(TMP_HTML_FILE)
+        }
+    })
     const page = await browser.newPage();
     function check(filePath) {
         var isExist = false;
@@ -171,7 +179,8 @@ if (options.help) {
             if (lang && hljs.getLanguage(lang)) {
                 try {
                     return hljs.highlight(lang, str).value;
-                } catch (__) { }
+                } catch (__) {
+                }
             } else if (fencedCodeBlockExt !== null) {
                 for (let ext of fencedCodeBlockExt) {
                     if (ext.name === lang) {
@@ -197,7 +206,6 @@ if (options.help) {
         let css = Buffer.from(await readFile(options.css), 'utf8').toString('base64')
         let meta = '<meta charset="utf-8">'
         let doctype = '<!DOCTYPE html>'
-
         let link = `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
         css = Buffer.from(await readFile(`node_modules/highlight.js/styles/${config.highlight.theme}.css`), 'utf8').toString('base64')
         link += `<link rel="stylesheet" href="data:text/css;base64,${css}"/>`
@@ -214,11 +222,14 @@ if (options.help) {
         } else {
             fs.writeFileSync(options.html, htmldoc);
         }
+    } else {
+        fs.writeFileSync(TMP_HTML_FILE, htmldoc);
     }
+    await page.goto('file://' + path.join(__dirname, (options.html) ? options.html : TMP_HTML_FILE), { waitUntil: 'networkidle0' });
+    //await page.goto((options.url !== undefined) ? options.url : `data:text/html,${htmldoc}`, { waitUntil: 'networkidle0' });
 
-    await page.goto((options.url !== undefined) ? options.url : `data:text/html,${htmldoc}`, { waitUntil: 'networkidle0' });
-    // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
     if (!options.view && options.pdf) {
+        // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
         let opt = Object.assign({ path: options.output }, config.pdf_options)
         await page.pdf(opt);
     }
