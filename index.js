@@ -225,8 +225,8 @@ if (options.help) {
     } else {
         fs.writeFileSync(TMP_HTML_FILE, htmldoc);
     }
-    await page.goto('file://' + path.join(__dirname, (options.html) ? options.html : TMP_HTML_FILE), { waitUntil: 'networkidle0' });
-    //await page.goto((options.url !== undefined) ? options.url : `data:text/html,${htmldoc}`, { waitUntil: 'networkidle0' });
+    const pageURI = options.url || 'file://' + path.join(__dirname, (options.html) ? options.html : TMP_HTML_FILE)
+    await page.goto(pageURI, { waitUntil: 'networkidle0' });
 
     if (!options.view && options.pdf) {
         // See https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions

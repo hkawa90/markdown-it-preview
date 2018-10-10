@@ -118,8 +118,9 @@ Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The defaul
 - [x] configure highlight.js theme
 - [x] input markdown file from stdin
 - [ ] highlight style setting
-- [ ] screenshot
-- [ ] url option
+- [ ] configuration file
+- [x] screenshot
+- [x] url option
 - [ ] Document
 - [x] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
 - [ ] Test code
