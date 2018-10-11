@@ -124,6 +124,7 @@ Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The defaul
 - [x] url option
 - [ ] Do pdf output/screenshot, when completed with rendering mermaid and viz.
 - [ ] Document
+- [ ] html-converter
 - [x] Apply markdown-it plugin([markdown-it-sub](https://github.com/markdown-it/markdown-it-sub), [markdown-it-ins](https://github.com/markdown-it/markdown-it-ins), [markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote), etc)
 - [ ] Test code
 ## Issues
