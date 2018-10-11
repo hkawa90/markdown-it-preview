@@ -33,7 +33,8 @@ module.exports = {
             name: 'wavedrom',
             description: 'digital timing diagram (waveform) rendering engine',
             proc: function (contents) { return `<script type="WaveDrom">${contents}</script>` },
-            postProcess: function () { return `
+            postProcess: function () {
+                return `
             <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/1.6.2/skins/default.js" type="text/javascript"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/1.6.2/wavedrom.min.js" type="text/javascript"></script>
             <script>window.addEventListener("load",function(){WaveDrom.ProcessAll()});</script>
@@ -183,11 +184,22 @@ module.exports = {
                         },
 
                         render: function (tokens, idx) {
-                            var m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/);
+                            // https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript/4835406#4835406
+                            function escapeHtml(text) {
+                                var map = {
+                                    '&': '&amp;',
+                                    '<': '&lt;',
+                                    '>': '&gt;',
+                                    '"': '&quot;',
+                                    "'": '&#039;'
+                                };
 
+                                return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+                            }
+                            var m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/);
                             if (tokens[idx].nesting === 1) {
                                 // opening tag
-                                return '<details><summary>' + md.utils.escapeHtml(m[1]) + '</summary>\n';
+                                return '<details><summary>' + escapeHtml(m[1]) + '</summary>\n';
 
                             } else {
                                 // closing tag
