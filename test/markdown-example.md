@@ -232,6 +232,12 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 *here be dragons*
 :::
 
+### Custom inline comment
+
+<!-- pagebreak -->
+
+<!-- iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C51.47612752641776%2C0.00030577182769775396%2C51.478569861898606&layer=mapnik" -->
+
 ### [Mathjax](https://github.com/classeur/markdown-it-mathjax)
 
 When $a \ne 0$, there are two solutions to $ax^2 + bx + c = 0$ and they are

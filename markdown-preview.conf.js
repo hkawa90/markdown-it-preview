@@ -163,8 +163,8 @@ module.exports = {
             description: 'Markdown-it plugin to bypass LaTeX math for mathjax processing.',
             url: 'https://github.com/classeur/markdown-it-mathjax',
             authors: ['Benoit Schweblin'],
-            requireCall: function (func) {
-                return func()
+            setup: function (md, instance) {
+                return md.use(instance())
             },
             postProcess: function () {
                 return '<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML" async></script>'
@@ -209,8 +209,84 @@ module.exports = {
                     }
                 }
             ],
+            setup: function (md, instance) {
+                md.use(instance, this.options.name, this.options.container)
+            },
             postProcess: null,
             enable: true
         },
+        {
+            name: 'markdown-it-custom-html-comment',
+            description: 'markdown-it-custom-html-comment',
+            options: [
+                {
+                    name: 'pagebreak',
+                    container: {
+                        validate: function (params) {
+                            return params.trim().match(/^pagebreak/);
+                        },
+                        render: function (tokens, idx) {                            
+                            var m = tokens[idx].info.trim().match(/pagebreak/);
+                            if (m) {
+                                return '<div style="page-break-before:always"></div>'
+                            }
+                            return '';
+                        }
+                    }
+                },
+                {
+                    name: 'iframe', // insert html into iframe
+                    container: {
+                        validate: function (params) {
+                            return params.trim().match(/^iframe/);
+                        },
+                        render: function (tokens, idx) {
+                            let src = tokens[idx].info.trim().match(/src\s*\=\s*['"]([\s\w/:%#\$&\?\(\)~\.=\+\-]+)['"]/)
+                            let selector = tokens[idx].info.trim().match(/selector\s*\=\s*['"]([\s\w/:%#\$&\?\(\)~\.=\+\-]+)['"]/)
+                            
+                            if (src !== null) {
+                                if (selector === null) {
+                                    return `<div><iframe src="${src[1]}"></iframe></div>`
+                                } else {
+                                    return `<div><iframe src="${src[1]}" data-mip-selector"${selector[2]}"></iframe></div>`
+                                }
+                            }
+                            return '';
+                        }
+                    }
+                }
+            ],
+            setup: function (md, instance) {
+                for (let i = 0; i < this.options.length; i++) {
+                    md.use(instance, this.options[i].name, this.options[i].container)
+                }
+            },
+            postProcess: null,
+            enable: true
+        }
+    ],
+    html_converter: [
+        {
+            name: 'Import html',
+            synopsis: '<!-- ImportHtml URI [CSS Selector] -->',
+            description: 'create inline frame using iframe tag.',
+            example: '<!-- ImportHtml file:///tmp/test.html .hoge -->',
+            process: function (html) {
+                var result = html
+                return result
+            },
+            enable: true
+        },
+        {
+            name: 'html-minifier',
+            process: function (html) {
+                var minify = require('html-minifier').minify;
+                var result = minify(html, {
+                    removeAttributeQuotes: true
+                });
+                return result
+            },
+            enable: true
+        }
     ]
 }
