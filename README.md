@@ -32,6 +32,9 @@ Otherwise arguments:
     output PDF file.
 --url=url string
     input web page url.
+--config=config file path
+    input config file path.
+
 ```
 ## Features
 - Convert Markdown to PDF with [puppeteer](https://github.com/GoogleChrome/puppeteer).
@@ -119,7 +122,7 @@ Highlighting theme defined `highlight` in `markdown-preview.conf.js`. The defaul
 - [x] configure highlight.js theme
 - [x] input markdown file from stdin
 - [ ] highlight style setting
-- [ ] configuration file
+- [x] configuration file
 - [x] screenshot
 - [x] url option
 - [ ] Do pdf output/screenshot, when completed with rendering mermaid and viz.
